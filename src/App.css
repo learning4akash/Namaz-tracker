@@ -49,7 +49,7 @@ nav ul li a {
   text-decoration: none;
   color: black;
 }
-input[type=text], select {
+/* input[type=text], select {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -57,7 +57,7 @@ input[type=text], select {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
-}
+} */
 
 .form {
   width: 500px;
@@ -92,19 +92,29 @@ input[type=text], select {
   margin-left: 15px;
   cursor: pointer;
 }
-
+/* style={{  width:"500px", margin: "auto",padding:"20px", marginTop:"20px" }} */
+.setting {
+  width: 500px;
+  margin: auto;
+  margin-top: 40px;
+}
 @media screen and (width: 412px) {
-  .form {
+  .setting {
     width: 350px;
   }
 }
 @media screen and (width: 390px) {
-  .form {
+  .setting {
     width: 350px;
   }
 }
 @media screen and (width: 414px) {
-  .form {
+  .setting {
+    width: 350px;
+  }
+}
+@media screen and (width: 430px) {
+  .setting {
     width: 350px;
   }
 }
