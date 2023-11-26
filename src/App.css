@@ -32,7 +32,7 @@ div > h1 > a{
 
 nav {
   width: 100%;
-  padding: 15px 10%;
+  padding: 4px 10%;
   display: flex;
   align-items: center;
   justify-content: space-between;
