@@ -5,7 +5,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import App from "./App";
-import DataList from "./Component/DataList"
+import Today from "./today";
 import Setting from "./Setting";
 const router = createBrowserRouter([
   {
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/today",
-        element: <DataList />
+        element: <Today />
       }, 
       {
         path: "/",

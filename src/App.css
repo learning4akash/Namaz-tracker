@@ -49,15 +49,7 @@ nav ul li a {
   text-decoration: none;
   color: black;
 }
-/* input[type=text], select {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-} */
+
 
 .form {
   width: 500px;
@@ -98,26 +90,29 @@ nav ul li a {
   margin: auto;
   margin-top: 40px;
 }
-@media screen and (width: 412px) {
+@media screen and (max-width: 500px) {
   .setting {
     width: 350px;
   }
 }
-@media screen and (width: 390px) {
-  .setting {
+
+
+.today {
+  width: 500px;
+  margin: auto;
+  margin-top: 40px;
+}
+
+@media screen and (max-width: 500px) {
+  .today {
     width: 350px;
+    margin: auto;
+    margin-top: 40px;
   }
 }
-@media screen and (width: 414px) {
-  .setting {
-    width: 350px;
-  }
-}
-@media screen and (width: 430px) {
-  .setting {
-    width: 350px;
-  }
-}
+
+
+
 
 
 

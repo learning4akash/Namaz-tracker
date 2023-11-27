@@ -1,25 +1,12 @@
 import React from 'react';
-import { Button, Flex, Segmented, Checkbox } from 'antd';
+import {  Flex, Checkbox } from 'antd';
  import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import './dataShow.css';
 
-const boxStyle = {
-//   width: '600px',
-//   margin: "auto",
-  borderRadius: 6,
-  color: "black",
-  padding: "10px 10px",
-  listStyle: "none",
-  backgroundColor: "#dcdcdc",
-  borderBottom: "1px solid black",
-  borderTop: "1px solid black",
-//   boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
-
-  
-};
 const iconStyle = {
-    marginBottom: "10px",
+    marginBottom: "-14px",
     cursor: "pointer",
-    
+    width: "100%",
 }
 
 const justifyOptions = [
@@ -44,22 +31,21 @@ const App = () => {
   return (
     <Flex gap="middle" align="start" vertical>
 
-        <div style={{ width: "600px", margin: "auto", marginTop: "40px",}}>
+        
                 <Flex style={iconStyle} justify="space-around" align={alignItems}>
                     <p><FaAngleLeft style={{ width: "30px", height: "30px"}}/></p>
                     <p style={{ fontWeight: "bold"}}>20 Nov 2023</p>
                     <p><FaAngleRight style={{ width: "30px", height: "30px"}} /></p>
                 </Flex>
             {Data.map(data => (
-                <Flex key={data.id} style={boxStyle} justify={justify} align={alignItems}>
-                        <li style={{}}>{data.namazName}</li>
+                <Flex key={data.id}  className='boxStyle' justify={justify} align={alignItems}>
+                        <li>{data.namazName}</li>
                         <li>{data.time}</li>
-                        <li><Checkbox ></Checkbox></li>     
+                        <li><Checkbox ></Checkbox></li>
+                             
                 </Flex>
+             
             )) }
-            
-    
-        </div>
     </Flex>     
   );
 };
