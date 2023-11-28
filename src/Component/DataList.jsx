@@ -3,11 +3,7 @@ import {  Flex, Checkbox } from 'antd';
  import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import './dataShow.css';
 
-const iconStyle = {
-    marginBottom: "-14px",
-    cursor: "pointer",
-    width: "100%",
-}
+
 
 const justifyOptions = [
   'flex-start',

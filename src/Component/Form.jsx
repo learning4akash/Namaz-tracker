@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, Form, Input, Select } from 'antd';
 const { Option } = Select;
 const layout = {
@@ -34,14 +33,14 @@ const App = () => {
     >
       <Form.Item
         name="name"
-        label="name"
+        label="Name"
         rules={[
           {
             required: true,
           },
         ]}
       >
-        <Input placeholder="Basic usage" />
+        <Input placeholder="Your Name" />
       </Form.Item>
       <Form.Item
         name="city"
@@ -59,7 +58,7 @@ const App = () => {
         >
           <Option value="1">Dhaka</Option>
           <Option value="2">Doha</Option>
-          <Option value="3">kolkata</Option>
+          <Option value="3">Kolkata</Option>
         </Select>
       </Form.Item>
       <Form.Item
@@ -83,7 +82,7 @@ const App = () => {
       </Form.Item>
       <Form.Item
         name="salat method"
-        label="Salat Method"
+        label="Salat Time Calculation Methods"
         rules={[
           {
             required: true,
@@ -91,7 +90,7 @@ const App = () => {
         ]}
       >
         <Select
-          placeholder="Select a option and change input text above"
+          placeholder="Select Your City Salat Time Calculation Methods"
           
           allowClear
         >

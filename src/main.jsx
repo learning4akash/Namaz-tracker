@@ -7,6 +7,7 @@ import {
 import App from "./App";
 import Today from "./today";
 import Setting from "./Setting";
+import Dashboard from './Dashboard';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Setting />
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard />
       }
     ]
   }
