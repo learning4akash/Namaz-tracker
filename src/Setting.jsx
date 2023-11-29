@@ -5,25 +5,43 @@ import Form from './Component/Form'
 
 export default function Setting () {
     const [name, setName] = useState();
+    const [country, setCountry] = useState();
+    const [city, setCity] = useState();
+    const [mazhab, setMazhab] = useState();
+    const [salatCalculationMethods, setSalatCalculationMethods] = useState();
 
 
-     useEffect(() => {
-    //     fetch('https://api.aladhan.com/v1/calendarByCity/2023/11?city=Dhaka&country=Bangladesh&method=1&school=1')
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         console.log(data)
-    //     })
-    //     .catch((err) => {
-    //         console.err(err.message);
-    //     })
-        console.log('Hello world');
-    }, [name]);
+    const onNameChange = (e) => {
+       console.log(e.target.value);
+    }
+
+    const onCountryChange = (e) => {
+        console.log(e.target);
+    }
+
+    const onCityChange = (e) => {
+        console.log(e.target.value);
+    }
+    
+    const onMazhabChange = (e) => {
+        console.log(e.target.value);
+    }
+
+    const onSalatCalculationMethodsChange = (e) => {
+        setSalatCalculationMethods(e.target.value);
+    }
 
 
     return (
         <>
         <div className='setting'>
-            <Form />
+            <Form 
+                onNameChange={onNameChange} 
+                onCountryChange ={onCountryChange} 
+                onCityChange={onCityChange}
+                onMazhabChange={onMazhabChange}
+                onSalatCalculationMethodsChange={onSalatCalculationMethodsChange}
+            />
         </div>
           
         </>

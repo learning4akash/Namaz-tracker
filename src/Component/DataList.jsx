@@ -1,8 +1,7 @@
 import React from 'react';
 import {  Flex, Checkbox } from 'antd';
- import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import '../App.css';
-
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import './dataShow.css';
 
 
 const justifyOptions = [
@@ -29,7 +28,7 @@ const App = () => {
     <Flex gap="middle" align="start" vertical>
 
         
-                <Flex className='iconStyle' justify="space-around" align={alignItems}>
+                <Flex className='iconStyle' justify={justify} align={alignItems}>
                     <p><FaAngleLeft style={{ width: "30px", height: "30px"}}/></p>
                     <p style={{ fontWeight: "bold"}}>20 Nov 2023</p>
                     <p><FaAngleRight style={{ width: "30px", height: "30px"}} /></p>
