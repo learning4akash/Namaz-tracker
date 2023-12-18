@@ -20,13 +20,12 @@ const tailLayout = {
 const App = () => {
   const [form] = Form.useForm();
   const [ country, setCountry ] = useState();
-  const [userData, setUserData] = useState([]);
   const [countryCode, setCountryCode] = useState();
   let getCountry = Country.getAllCountries();
 
-  useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(userData));
-  },[userData]);
+  // useEffect(() => {
+  //   localStorage.setItem('users', JSON.stringify(userData));
+  // },[userData]);
 
 
   const onChangeCountry = (value) => {
@@ -38,11 +37,35 @@ const App = () => {
 			return selectedCountryCode.isoCode; 
 		});	
 	};
- 
+   
 
+  // const date = new Date();
+  // const formatter = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  // const formattedDate = formatter.format(date);
+  // console.log(formattedDate);
+
+  const salatTime  = new Date();
+  const currentMonth = salatTime.getMonth() + 1;
+  const currentDay  = salatTime.getDate();
+  
   const onFinish = (values) => {
-    setUserData(values)
+    localStorage.setItem('users', JSON.stringify(values));
+    const getUser = localStorage.getItem("users");
+    if (getUser) {
+      const userData = JSON.parse(getUser);
+      const {country, Mazhab, city,salat_method} = userData;
+      fetch(`https://api.aladhan.com/v1/calendarByCity/2023/${currentMonth}?city=${city}&country=${country}&method=${salat_method}school=${Mazhab}`)
+      .then((response) => response.json())
+      .then((data) => {
+         localStorage.setItem('prayer', JSON.stringify(data));
+      })
+      .catch((err) => {
+         console.log(err.message);
+      });
+    }
   };
+
+  
  
   const onReset = () => {
     form.resetFields();
@@ -117,7 +140,7 @@ const App = () => {
         </Select>
       </Form.Item>
       <Form.Item
-        name="salat method"
+        name=" salat_method"
         label="Salat Time Calculation Methods"
         rules={[
           {
@@ -129,7 +152,7 @@ const App = () => {
           placeholder="Select Your City Salat Time Calculation Methods"
           allowClear
         >
-          <Option value="01">University of Scinece, Karachi</Option>
+          <Option value="0">University of Scinece, Karachi</Option>
         </Select>
       </Form.Item>
       <Form.Item {...tailLayout}>
