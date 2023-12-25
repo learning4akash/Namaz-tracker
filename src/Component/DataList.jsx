@@ -161,7 +161,6 @@ const App = () => {
                       setDate(moment(date).add(1, 'days').format(GLOBAL_DATE_FORMAT))
                     }}><FaAngleRight style={{ width: "30px", height: "30px", marginLeft:"100px", cursor:"pointer"}} /></p>
                 </Flex>
-                {JSON.stringify(timings)}
               {timings.map((timing, index) => (
                 <Flex key={timing.id}  className='boxStyle' justify={justify} align={alignItems}>
                         <li>{timing.label}</li>
