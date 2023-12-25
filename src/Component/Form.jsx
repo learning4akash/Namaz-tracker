@@ -25,10 +25,7 @@ const App = () => {
   const [countryCode, setCountryCode] = useState();
   const [salatMethods, setSalatMethods] = useState([]);
   const [salatMethodFind, setSalatMethodFind] = useState();
-
-  // useEffect(() => {
-  //   localStorage.setItem('users', JSON.stringify(userData));
-  // },[userData]);
+  const [cities, setCities] = useState();
 
   const onChangeCountry = (value) => {
 		setCountryCode(() => {
@@ -37,8 +34,22 @@ const App = () => {
 			);
 			return selectedCountryCode.isoCode; 
 		});	
+    
 	};
-   
+
+  const userData = JSON.parse(localStorage.getItem('users')) ?? [];
+  const findSalatCul = salatMethods.find((salat)=> salat.id == userData.salat_method );
+  const findCountry = countries.find(country => country.name == userData.country);
+  
+  useEffect(() => {
+    setCountryCode(findCountry.isoCode);
+  },[])
+
+  const onChangeCity = (value) => {
+
+      const Allcities = City.getCitiesOfCountry(findCountry.isoCode);
+  }
+
   // const date = new Date();
   // const formatter = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
   // const formattedDate = formatter.format(date);
@@ -46,33 +57,7 @@ const App = () => {
 
   const salatTime  = new Date();
   const currentMonth = salatTime.getMonth() + 1;
-
-  // useEffect(() => {
-  //     try {
-  //       const userData = JSON.parse(localStorage.getItem('users'));
-  //       if (userData) {
-  //         setUserInfo(userData);  
-  //       }
-         
-  //     } catch (err) {
-  //       console.log(err);
-  //     }  
-  // },[]);
-
-
-    // if (userInfo) {
-    //   const findSalatCul = salatMethods.find((salat)=> salat.id == userInfo.salat_method );
-    //    if (findSalatCul) {
-    //       setSalatMethodFind(findSalatCul);
-    //    }
-    // }
   
-    // useEffect(() => {
-
-    // },[salatMethods]) 
-    
-
-
   useEffect(() => {
 
     if (salatMethods) {
@@ -109,8 +94,6 @@ const App = () => {
     form.resetFields();
   };
 
-  const userData = JSON.parse(localStorage.getItem('users')) ?? [];
-  const findSalatCul = salatMethods.find((salat)=> salat.id == userData.salat_method );
 
   function FormItem ({name, label, placeholder, options, onChange}) {
     return (
@@ -163,7 +146,7 @@ const App = () => {
       <Input placeholder="Your Name"  />
       </Form.Item>
       <FormItem name="country"  label="Country" onChange={onChangeCountry} placeholder="Select Your Country" options={countries}/>
-      <FormItem name="city" label="City" placeholder="Select Your City" options={City.getCitiesOfCountry(countryCode)}/>
+      <FormItem name="city" label="City" onChange={onChangeCity} placeholder="Select Your City" options={City.getCitiesOfCountry(countryCode)}/>
       <Form.Item
         name="Mazhab"
         label="Mazhab"
