@@ -12,6 +12,7 @@ const App = () => {
   const [userData, setUserData]         = useState();
   const [userInfo, setUserInfo]         = useState();
   const [messageApi, contextHolder]     = message.useMessage();
+  const [loading, setLoading]           = useState(false);
 
   if (userData) {
     localStorage.setItem('users', JSON.stringify(userData));
@@ -20,31 +21,24 @@ const App = () => {
   useEffect(() => {
     const getUser = localStorage.getItem("users");
     if (getUser) {
-      const userData = JSON.parse(getUser);
-      const {country, Mazhab, city,salat_method} = userData;
+      const userDataObj = JSON.parse(getUser);
+      setUserInfo(userDataObj);
+      const {country, Mazhab, city,salat_method} = userDataObj;
       fetch(`https://api.aladhan.com/v1/calendarByCity/2023/${currentMonth}?city=${city}&country=${country}&method=${salat_method}school=${Mazhab}`)
       .then((response) => response.json())
       .then((data) => {
          localStorage.setItem('prayer', JSON.stringify(data));
          messageApi.info('Data Save successfully');
+         setLoading(true);
         //  setUserInfo(values)
       })
       .catch((err) => {
          console.log(err.message);
       });
     }
-  })
+  },[userData])
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('users'));
-    if (user) {
-       setUserInfo(user);
-    }
-  },[])
-  
   return (
-  
-
     <div >
       <div className='topbar-content'>
          <div></div>
@@ -55,7 +49,8 @@ const App = () => {
       </div> 
        
        <hr />
-       <Tabs centered  defaultActiveKey="3" items={[
+       {JSON.stringify(loading)}
+       <Tabs centered  defaultActiveKey={ loading ? "2" : "3"} items={[
                            {
                              key: '1',
                              label: 'Dashboard',
