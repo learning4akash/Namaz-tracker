@@ -50,9 +50,10 @@ const options = {
 
 const BubbleChart = () => {
   return (
-    <div>
-      <Bubble id="bubble" data={data} options={options} />
-    </div>
+    // <div>
+    //   <Bubble id="bubble" data={data} options={options} />
+    // </div>
+    <h1>HELLO DASHBOARD</h1>
   );
 };
 

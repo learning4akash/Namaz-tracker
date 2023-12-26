@@ -90,9 +90,6 @@ const App = () => {
         setCurrentDatePersistentIndex(currentDateIndex);
         persistentResult = persistentData[currentDateIndex];
       }
-      // console.log(persistentResult);
-
-      // console.log('Calling data');
       setData(prayerData);
       prepareTimings(prayerData, persistentResult);
       
@@ -157,7 +154,6 @@ const App = () => {
                     }} ><FaAngleLeft style={{ width: "30px", height: "30px", marginLeft: "50px", cursor:"pointer"}}/></p>
                     <p style={{ fontWeight: "bold", marginLeft:"120px"}}>{dateLabel}</p>
                     <p onClick={() => {
-                      // console.log(date, moment(date).add(1, 'days').format(GLOBAL_DATE_FORMAT))
                       setDate(moment(date).add(1, 'days').format(GLOBAL_DATE_FORMAT))
                     }}><FaAngleRight style={{ width: "30px", height: "30px", marginLeft:"100px", cursor:"pointer"}} /></p>
                 </Flex>
@@ -165,7 +161,6 @@ const App = () => {
                 <Flex key={timing.id}  className='boxStyle' justify={justify} align={alignItems}>
                         <li>{timing.label}</li>
                         <li>{timing.time}</li>
-                        <li>{timing.isCompleted ? 'Yes' : 'No'}</li>
                         <li>{ date > moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox onChange={() => handleCompleteSalat(index)} disabled  checked={timing.isCompleted}></Checkbox> : <Checkbox onChange={() => handleCompleteSalat(index)}  checked={timing.isCompleted}></Checkbox>}</li>    
                 </Flex>
               
