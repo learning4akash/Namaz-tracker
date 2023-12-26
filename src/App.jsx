@@ -14,11 +14,11 @@ const App = () => {
   const [messageApi, contextHolder]     = message.useMessage();
   const [loading, setLoading]           = useState(false);
 
-  if (userData) {
-    localStorage.setItem('users', JSON.stringify(userData));
-  }
-
   useEffect(() => {
+    // if (userData) {
+    //   localStorage.setItem('users', JSON.stringify(userData));
+    // }
+    userData ? localStorage.setItem('users', JSON.stringify(userData)) : "";
     const getUser = localStorage.getItem("users");
     if (getUser) {
       const userDataObj = JSON.parse(getUser);
@@ -49,7 +49,6 @@ const App = () => {
       </div> 
        
        <hr />
-       {JSON.stringify(loading)}
        <Tabs centered  defaultActiveKey={ loading ? "2" : "3"} items={[
                            {
                              key: '1',
