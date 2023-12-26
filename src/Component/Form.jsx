@@ -46,14 +46,6 @@ const App = ({setUserData, contextHolder}) => {
       setLoading(false);
     }
   }, []);
-
-
-  // const date = new Date();
-  // const formatter = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  // const formattedDate = formatter.format(date);
-  // console.log(formattedDate);
-
-
   
   useEffect(() => {
     if (salatMethods) {
@@ -85,6 +77,7 @@ const App = ({setUserData, contextHolder}) => {
     >
       <Select
         placeholder= {placeholder}
+        showSearch
         onChange={onChange}
         allowClear
       >
@@ -173,13 +166,8 @@ const App = ({setUserData, contextHolder}) => {
           <Button style={{ marginRight:"20px"}} type="primary" htmlType="submit">
             Submit
           </Button>
-          {/* <Button htmlType="button" onClick={onReset}>
-            Reset
-          </Button> */}
-          
-        </Form.Item>
+        </Form.Item> 
       </Form>
-    
       }
     </>
   );
