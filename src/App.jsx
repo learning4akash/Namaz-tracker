@@ -37,11 +37,7 @@ const App = () => {
       const getUser = JSON.parse(localStorage.getItem("users"));
       setUserInfo(getUser);
     }
-  },[userData])
-
-  // useEffect(() => {
-    
-  // },[])
+  },[userData])sss
 
   return (
     <div >
