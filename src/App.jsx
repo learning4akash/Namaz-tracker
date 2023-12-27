@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import Form from './Component/Form'
 import './App.css'
 
-const salatTime  = new Date();
+const salatTime    = new Date();
 const currentMonth = salatTime.getMonth() + 1;
 const App = () => {
   const [userData, setUserData]         = useState();
@@ -15,28 +15,33 @@ const App = () => {
   const [loading, setLoading]           = useState(false);
 
   useEffect(() => {
-    // if (userData) {
-    //   localStorage.setItem('users', JSON.stringify(userData));
-    // }
-    userData ? localStorage.setItem('users', JSON.stringify(userData)) : "";
-    const getUser = localStorage.getItem("users");
-    if (getUser) {
-      const userDataObj = JSON.parse(getUser);
-      setUserInfo(userDataObj);
-      const {country, Mazhab, city,salat_method} = userDataObj;
-      fetch(`https://api.aladhan.com/v1/calendarByCity/2023/${currentMonth}?city=${city}&country=${country}&method=${salat_method}school=${Mazhab}`)
-      .then((response) => response.json())
-      .then((data) => {
-         localStorage.setItem('prayer', JSON.stringify(data));
-         messageApi.info('Data Save successfully');
-         setLoading(true);
-        //  setUserInfo(values)
-      })
-      .catch((err) => {
-         console.log(err.message);
-      });
+    if (userData) {
+      localStorage.setItem('users', JSON.stringify(userData)) 
+      const getUser = localStorage.getItem("users");
+      if (getUser) {
+        const userDataObj = JSON.parse(getUser);
+        setUserInfo(userDataObj);
+        const {country, Mazhab, city,salat_method} = userDataObj;
+          fetch(`https://api.aladhan.com/v1/calendarByCity/2023/${currentMonth}?city=${city}&country=${country}&method=${salat_method}school=${Mazhab}`)
+          .then((response) => response.json())
+          .then((data) => {
+             localStorage.setItem('prayer', JSON.stringify(data));
+             messageApi.info('Data Save successfully');
+             setLoading(true);
+          })
+          .catch((err) => {
+             console.log(err.message);
+          });
+      }
+    } else {
+      const getUser = JSON.parse(localStorage.getItem("users"));
+      setUserInfo(getUser);
     }
   },[userData])
+
+  // useEffect(() => {
+    
+  // },[])
 
   return (
     <div >
