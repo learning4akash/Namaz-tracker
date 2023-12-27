@@ -54,7 +54,7 @@ const App = () => {
       </div> 
        
        <hr />
-       <Tabs centered  defaultActiveKey={ loading ? "2" : "3"} items={[
+       <Tabs centered  defaultActiveKey={ userInfo ? "2" : "3"} items={[
                            {
                              key: '1',
                              label: 'Dashboard',
