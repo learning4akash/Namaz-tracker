@@ -67,8 +67,6 @@ const App = () => {
       </div> 
        
        <hr />
-       {JSON.stringify(prayers)}
-       {JSON.stringify(userInfo)}
        <Tabs centered  defaultActiveKey={ userInfo ? "2" : "3"}
         items={[
                            {
