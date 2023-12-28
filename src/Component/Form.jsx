@@ -23,18 +23,33 @@ const App = ({setUserData, contextHolder}) => {
   const [form]                          = Form.useForm();
   const [userInfo, setUserInfo]         = useState({});
   const [countryCode, setCountryCode]   = useState();
+  const [country, setCountry]           = useState([]);
+  const [city, setCity]                 = useState([]);
   const [salatMethods, setSalatMethods] = useState([]);
   const [loading, setLoading]           = useState(true);
 
+
   const onChangeCountry = (value) => {
-		setCountryCode(() => {
-			const selectedCountryCode = countries.find(
-				(e) => e.name === value
-			);
-			return selectedCountryCode.isoCode; 
-		});	
+    if (value) {
+      setCountry(value);
+      setCountryCode(() => {
+        const selectedCountryCode = countries.find(
+          (e) => e.name === value
+        );
+        return selectedCountryCode.isoCode; 
+      });
+    }
+    setCity([]);
 	};
-  
+
+  useEffect(() => {
+    if (countryCode) {
+      const cities = City.getCitiesOfCountry(countryCode);
+      setCity(cities);
+    }
+  },[countryCode])
+
+
   useEffect(() => {
     if (! Object.keys(userInfo).length) {
       const data = JSON.parse(localStorage.getItem('users')) ?? [];
@@ -44,7 +59,7 @@ const App = ({setUserData, contextHolder}) => {
       }
       setUserInfo(data);
       setLoading(false);
-    }
+    }  
   }, []);
   
   useEffect(() => {
@@ -57,7 +72,7 @@ const App = ({setUserData, contextHolder}) => {
       .catch((err) => {
         console.log(err.message);
       });
-    }
+    }  
   }, []);
 
   const onFinish = (values) => {
@@ -102,8 +117,6 @@ const App = ({setUserData, contextHolder}) => {
           form={form}
           name="control-hooks"
           onFinish={onFinish}
-
-          // initialValues={{name: userData ? userData.name : "" , country: userData ? userData.country : "Select Your Country",  city: userData ? userData.city : "", Mazhab: userData ? userData.Mazhab : "", salat_method: userData ? userData.salat_method : "" }}
           initialValues={{...userInfo}}
         >
 
@@ -120,7 +133,30 @@ const App = ({setUserData, contextHolder}) => {
           <Input  placeholder="Your Name" />
         </Form.Item>
         <FormItem name="country"  label="Country" onChange={onChangeCountry} placeholder="Select Your Country" options={countries}/>
-        <FormItem name="city" label="City" placeholder="Select Your City" options={City.getCitiesOfCountry(countryCode)}/>
+        { city.length ? (<Form.Item
+          name="city"
+          label="City"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select
+            placeholder="Select Your City"
+            allowClear
+            showSearch
+          >
+             {
+              city.map((value, index) => (
+                <Option key={index} value={value.name}>
+                    {value.name}
+                </Option>
+            ))
+           }
+          </Select>
+        </Form.Item>) : ""}
+        
         <Form.Item
           name="mazhab"
           label="Mazhab"
@@ -135,6 +171,7 @@ const App = ({setUserData, contextHolder}) => {
             // onChange={onChangeMazhab}
             allowClear
           >
+         
             <Option value="0">Shafi</Option>
             <Option value="1">Hanafi</Option>
             <Option value="2">Maliki</Option>

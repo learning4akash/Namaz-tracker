@@ -101,7 +101,6 @@ const App = () => {
       }
       persistentData[currentDataPersistentIndex] = data;
     } else {
-      console.log('Hello world');
       persistentData.push({
         date: date,
         timings: [
