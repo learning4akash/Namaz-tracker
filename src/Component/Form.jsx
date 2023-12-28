@@ -32,7 +32,6 @@ const App = ({setUserData, contextHolder}) => {
   const onChangeCountry = (value) => {
     if (value) {
       setCountry(value);
-      setCity([]);
       setCountryCode(() => {
         const selectedCountryCode = countries.find(
           (e) => e.name === value
@@ -40,6 +39,7 @@ const App = ({setUserData, contextHolder}) => {
         return selectedCountryCode.isoCode; 
       });
     }
+    setCity([]);
 	};
 
   useEffect(() => {

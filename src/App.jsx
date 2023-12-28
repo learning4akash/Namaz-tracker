@@ -7,37 +7,51 @@ import Form from './Component/Form'
 import './App.css'
 
 const salatTime    = new Date();
+const currentYear = salatTime.getFullYear();
 const currentMonth = salatTime.getMonth() + 1;
 const App = () => {
   const [userData, setUserData]         = useState();
   const [userInfo, setUserInfo]         = useState();
   const [messageApi, contextHolder]     = message.useMessage();
   const [loading, setLoading]           = useState(false);
+  const [prayers, setPrayers]           = useState({});
 
   useEffect(() => {
     if (userData) {
       localStorage.setItem('users', JSON.stringify(userData)) 
-      const getUser = localStorage.getItem("users");
+      const getUser = JSON.parse(localStorage.getItem("users"));
+      let url = `https://api.aladhan.com/v1/calendarByAddress/${currentYear}/${currentMonth}?address=${getUser.country}&method=${getUser.salat_method}school=${getUser.mazhab}`;
+      if (getUser.hasOwnProperty('city')) {
+        url = `https://api.aladhan.com/v1/calendarByCity/${currentYear}/${currentMonth}?city=${getUser.city}&country=${getUser.country}&method=${getUser.salat_method}school=${getUser.mazhab}`;
+      }
       if (getUser) {
-        const userDataObj = JSON.parse(getUser);
-        setUserInfo(userDataObj);
-        const {country, Mazhab, city,salat_method} = userDataObj;
-          fetch(`https://api.aladhan.com/v1/calendarByCity/2023/${currentMonth}?city=${city}&country=${country}&method=${salat_method}school=${Mazhab}`)
-          .then((response) => response.json())
-          .then((data) => {
-             localStorage.setItem('prayer', JSON.stringify(data));
-             messageApi.info('Data Save successfully');
-             setLoading(true);
+          fetch(url)
+          .then((response) => {
+            if (! response.ok) throw new Error('status code 400')
+            return response.json();
           })
-          .catch((err) => {
-             console.log(err.message);
+          .then((data) => {
+            localStorage.setItem('prayer', JSON.stringify(data));
+            const getPrayersData = JSON.parse(localStorage.getItem("prayer"));
+            setPrayers(getPrayersData);
+            setUserInfo(getUser);
+            messageApi.info('Data Save successfully');
+            setLoading(true);
+          })
+          .catch((error) => {
+            localStorage.removeItem("prayer");
+            const getPrayersData = JSON.parse(localStorage.getItem("prayer"));
+            setPrayers(getPrayersData);
+             messageApi.info('your country prayer data not found');
           });
       }
     } else {
       const getUser = JSON.parse(localStorage.getItem("users"));
       setUserInfo(getUser);
+      const getPrayersData = JSON.parse(localStorage.getItem("prayer"));
+      setPrayers(getPrayersData);
     }
-  },[userData])sss
+  },[userData])
 
   return (
     <div >
@@ -50,18 +64,19 @@ const App = () => {
       </div> 
        
        <hr />
-       <Tabs centered  defaultActiveKey={ userInfo ? "2" : "3"} items={[
+       <Tabs centered  defaultActiveKey={ userInfo ? "2" : "3"}
+        items={[
                            {
                              key: '1',
                              label: 'Dashboard',
                              children: <Dashboard />,
-                             disabled: userInfo ? false : true,
+                             disabled: userInfo && prayers ? false : true,
                            },
                            {
                              key: '2',
                              label: 'Today',
                              children: <Today />,
-                             disabled: userInfo ? false : true,
+                             disabled: userInfo && prayers ? false : true,
 
                            },
                            {
