@@ -16,6 +16,10 @@ const App = () => {
   const [loading, setLoading]           = useState(false);
   const [prayers, setPrayers]           = useState({});
 
+  const getPrayersData = () => {
+    
+  }
+
   useEffect(() => {
     if (userData) {
       localStorage.setItem('users', JSON.stringify(userData)) 
@@ -36,13 +40,12 @@ const App = () => {
             setPrayers(getPrayersData);
             setUserInfo(getUser);
             messageApi.info('Data Save successfully');
-            setLoading(true);
           })
           .catch((error) => {
             localStorage.removeItem("prayer");
             const getPrayersData = JSON.parse(localStorage.getItem("prayer"));
             setPrayers(getPrayersData);
-             messageApi.info('your country prayer data not found');
+            messageApi.info('your country prayer data not found');
           });
       }
     } else {
@@ -64,6 +67,8 @@ const App = () => {
       </div> 
        
        <hr />
+       {JSON.stringify(prayers)}
+       {JSON.stringify(userInfo)}
        <Tabs centered  defaultActiveKey={ userInfo ? "2" : "3"}
         items={[
                            {
