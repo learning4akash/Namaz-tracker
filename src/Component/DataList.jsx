@@ -5,7 +5,6 @@ import './dataShow.css';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 
-
 const justifyOptions = [
   'flex-start',
   'center',
@@ -30,6 +29,7 @@ const App = () => {
   }))
   const [data, setData] = useState([]); 
   const [timings, setTimings] = useState([]);
+  const [loading, setLoading] = useState(false);
   const prepareTimings = (prayerData, persistentData) => {
     const modifiedData = moment(date).format('DD');
     const current      = prayerData[modifiedData - 1];
@@ -62,7 +62,6 @@ const App = () => {
       }
       setData(prayerData);
       prepareTimings(prayerData, persistentResult);
-      
     }
   }, []);
 
@@ -120,11 +119,11 @@ const App = () => {
                       setDate(moment(date).add(1, 'days').format(GLOBAL_DATE_FORMAT))
                     }}><FaAngleRight style={{ width: "30px", height: "30px", marginLeft:"100px", cursor:"pointer"}} /></p>
                 </Flex>
-              {timings.map((timing, index) => (
+              {timings?.map((timing, index) => (
                 <Flex key={timing.id}  className='boxStyle' justify={justify} align={alignItems}>
                         <li>{timing.label}</li>
                         <li>{timing.time}</li>
-                        <li>{ date > moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox onChange={() => handleCompleteSalat(index)} disabled  checked={timing.isCompleted}></Checkbox> : <Checkbox onChange={() => handleCompleteSalat(index)}  checked={timing.isCompleted}></Checkbox>}</li>    
+                        <li>{ date > moment().format(GLOBAL_DATE_FORMAT) || date < moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox onChange={() => handleCompleteSalat(index)} disabled  checked={timing.isCompleted}></Checkbox> : <Checkbox onChange={() => handleCompleteSalat(index)}  checked={timing.isCompleted}></Checkbox>}</li>    
                 </Flex>
               
               )) }  

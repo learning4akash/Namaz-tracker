@@ -1,4 +1,4 @@
-import { Link,  } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Tabs,message } from 'antd'
 import Today from "./today";
 import Dashboard from './Dashboard'
@@ -14,6 +14,7 @@ const App = () => {
   const [userInfo, setUserInfo]         = useState();
   const [messageApi, contextHolder]     = message.useMessage();
   const [prayers, setPrayers]           = useState({});
+  const [ActiveKey, setActiveKey]       = useState("3");
 
   const getPrayersData = () => {
     const getPrayersData = JSON.parse(localStorage.getItem("prayer"));
@@ -37,6 +38,7 @@ const App = () => {
           .then((data) => {
             localStorage.setItem('prayer', JSON.stringify(data));
             getPrayersData();
+            localStorage.removeItem("persistent_prayer");
             setUserInfo(getUser);
             messageApi.info('Data Save successfully');
           })
@@ -53,6 +55,9 @@ const App = () => {
     }
   },[userData])
 
+  // useEffect(() => {
+  //   userInfo && prayers ? setActiveKey("2") : setActiveKey("3");
+  // },[])
   return (
     <div >
       <div className='topbar-content'>
@@ -64,7 +69,7 @@ const App = () => {
       </div> 
        
        <hr />
-       <Tabs centered  defaultActiveKey={ userInfo ? "2" : "3"}
+       <Tabs centered  defaultActiveKey= {ActiveKey} 
         items={[
                            {
                              key: '1',

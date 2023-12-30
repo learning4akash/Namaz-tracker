@@ -28,19 +28,6 @@ const App = ({setUserData, contextHolder}) => {
   const [salatMethods, setSalatMethods] = useState([]);
   const [loading, setLoading]           = useState(true);
 
-  const onChangeCountry = (value) => {
-    if (value) {
-      setCountry(value);
-      setCountryCode(() => {
-        const selectedCountryCode = countries.find(
-          (e) => e.name === value
-        );
-        return selectedCountryCode.isoCode; 
-      });
-    }
-    setCity([]);
-	};
-
   useEffect(() => {
     if (countryCode) {
       const cities = City.getCitiesOfCountry(countryCode);
@@ -73,41 +60,28 @@ const App = ({setUserData, contextHolder}) => {
     }  
   }, []);
 
+  const onChangeCountry = (value) => {
+    if (value) {
+      setCountry(value);
+      setCountryCode(() => {
+        const selectedCountryCode = countries.find(
+          (e) => e.name === value
+        );
+        return selectedCountryCode.isoCode; 
+      });
+      form.setFieldValue('city', undefined);
+    }
+	};
+
   const onFinish = (values) => {
     setUserData(values);
   };
 
-  function FormItem ({name, label, placeholder, options, onChange}) {
-    return (
-      <Form.Item
-      name= {name}
-      label= {label}
-      rules={[
-        {
-          required: true,
-        },
-      ]}
-    >
-      <Select
-        placeholder= {placeholder}
-        showSearch
-        onChange={onChange}
-        allowClear
-      >
-      {options.map((value, index) => (
-              <Option key={index} value={value.name}>
-									{value.name}
-							</Option>
-      ))}
-      </Select>
-    </Form.Item>
-    )
-  }
- 
-
+  const onReset = () => {
+    form.resetFields();
+  };
 
   return (
-    
     <>
        {contextHolder}
       {!loading && <Form
@@ -124,19 +98,43 @@ const App = ({setUserData, contextHolder}) => {
             placeholder="Your Name"
             rules={[
               {
-                required: false,
+                required: true,
+                message: 'please type your name'
               },
             ]}
           >
           <Input  placeholder="Your Name" />
         </Form.Item>
-        <FormItem name="country"  label="Country" onChange={onChangeCountry} placeholder="Select Your Country" options={countries}/>
+        <Form.Item
+          name= "country"
+          label= "Country"
+          rules={[
+            {
+              required: true,
+              message: "please select your country name"
+            },
+          ]}
+        >
+          <Select
+            placeholder="Select Your country"
+            onChange={onChangeCountry}
+            allowClear
+          >
+            {
+              countries.map((value, index) => (
+                  <Option key={index} value={value.name}>
+                    {value.name}
+                </Option>))
+            } 
+          </Select>
+        </Form.Item>
         { city.length ? (<Form.Item
           name="city"
           label="City"
           rules={[
             {
               required: true,
+              message: 'please select your city' 
             },
           ]}
         >
@@ -166,7 +164,6 @@ const App = ({setUserData, contextHolder}) => {
         >
           <Select
             placeholder="Select Your Mazhab"
-            // onChange={onChangeMazhab}
             allowClear
           >
          
@@ -182,6 +179,7 @@ const App = ({setUserData, contextHolder}) => {
           rules={[
             {
               required: true,
+              message: 'please select your salat time calculation methods'
             },
           ]}
         >
@@ -200,6 +198,9 @@ const App = ({setUserData, contextHolder}) => {
         <Form.Item {...tailLayout}>
           <Button style={{ marginRight:"20px"}} type="primary" htmlType="submit">
             Submit
+          </Button>
+          <Button htmlType="button" onClick={onReset}>
+            Reset
           </Button>
         </Form.Item> 
       </Form>
