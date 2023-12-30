@@ -32,7 +32,7 @@ const App = () => {
   const [timings, setTimings] = useState([]);
   const prepareTimings = (prayerData, persistentData) => {
     const modifiedData = moment(date).format('DD');
-    const current = prayerData[modifiedData - 1];
+    const current      = prayerData[modifiedData - 1];
 
   const _timings = [];
   const excludedTimingKeys = ['Sunrise', 'Sunset', 'Imsak', 'Midnight', 'Lastthird', 'Firstthird'];
@@ -53,12 +53,9 @@ const App = () => {
   useEffect(() => {
     if (!data.length) {
       const { data: prayerData } = JSON.parse(localStorage.getItem("prayer"));
-      const persistentData = JSON.parse(localStorage.getItem("persistent_prayer")) ?? [];
-      const currentDateIndex = persistentData?.findIndex(data => date == data?.date);
-    
-
+      const persistentData       = JSON.parse(localStorage.getItem("persistent_prayer")) ?? [];
+      const currentDateIndex     = persistentData?.findIndex(data => date == data?.date);
       let persistentResult = {};
-      
       if (currentDateIndex > -1) {
         setCurrentDatePersistentIndex(currentDateIndex);
         persistentResult = persistentData[currentDateIndex];
@@ -74,7 +71,6 @@ const App = () => {
       const persistentData = JSON.parse(localStorage.getItem("persistent_prayer")) ?? [];
       const currentDateIndex = persistentData?.findIndex(data => date == data?.date);
       let persistentResult = {};
-      
       if (currentDateIndex > -1) {
         setCurrentDatePersistentIndex(currentDateIndex);
         persistentResult = persistentData[currentDateIndex];

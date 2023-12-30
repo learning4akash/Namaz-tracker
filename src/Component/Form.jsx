@@ -28,7 +28,6 @@ const App = ({setUserData, contextHolder}) => {
   const [salatMethods, setSalatMethods] = useState([]);
   const [loading, setLoading]           = useState(true);
 
-
   const onChangeCountry = (value) => {
     if (value) {
       setCountry(value);
@@ -48,7 +47,6 @@ const App = ({setUserData, contextHolder}) => {
       setCity(cities);
     }
   },[countryCode])
-
 
   useEffect(() => {
     if (! Object.keys(userInfo).length) {
