@@ -159,6 +159,7 @@ const App = ({setUserData, contextHolder}) => {
           rules={[
             {
               required: true,
+              message: 'please select your mazhab'
             },
           ]}
         >
