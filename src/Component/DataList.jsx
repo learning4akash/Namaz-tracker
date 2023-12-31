@@ -4,6 +4,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import './dataShow.css';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
+import { getUserData, getPrayersData, getPersistentPrayerData, storePersistentPrayerData } from '../localStorage';
 
 const justifyOptions = [
   'flex-start',
@@ -52,8 +53,8 @@ const App = () => {
   }
   useEffect(() => {
     if (!data.length) {
-      const { data: prayerData } = JSON.parse(localStorage.getItem("prayer"));
-      const persistentData       = JSON.parse(localStorage.getItem("persistent_prayer")) ?? [];
+      const { data: prayerData } = getPrayersData();
+      const persistentData       = getPersistentPrayerData() ?? [];
       const currentDateIndex     = persistentData?.findIndex(data => date == data?.date);
       let persistentResult = {};
       if (currentDateIndex > -1) {
@@ -67,7 +68,7 @@ const App = () => {
 
   useEffect(() => {
     if (data.length) {
-      const persistentData = JSON.parse(localStorage.getItem("persistent_prayer")) ?? [];
+      const persistentData = getPersistentPrayerData() ?? [];
       const currentDateIndex = persistentData?.findIndex(data => date == data?.date);
       let persistentResult = {};
       if (currentDateIndex > -1) {
@@ -84,8 +85,7 @@ const App = () => {
     const timing = {...timings[index]};
     timing.isCompleted = !timing.isCompleted;
     timings[index] = timing; 
-    const persistentData = JSON.parse(localStorage.getItem("persistent_prayer")) ?? [];
-    console.log({currentDataPersistentIndex})
+    const persistentData = getPersistentPrayerData() ?? [];
     if (currentDataPersistentIndex > -1) {
       const data = persistentData[currentDataPersistentIndex];
       const prayerIndex = data.timings.findIndex(timing => timing.label == timings[index].label);
@@ -104,7 +104,8 @@ const App = () => {
       });
       setCurrentDatePersistentIndex(persistentData.length - 1);
     }  
-    localStorage.setItem('persistent_prayer', JSON.stringify(persistentData));
+    // localStorage.setItem('persistent_prayer', JSON.stringify(persistentData));
+    storePersistentPrayerData(persistentData);
     setTimings([...timings]);
   }
   
