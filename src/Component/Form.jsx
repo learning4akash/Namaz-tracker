@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Select, message } from 'antd';
 import { Country, City } from 'country-state-city'
 import { useState, useEffect } from 'react';
+import { storePrayersData, storeUserData, getUserData, getPrayersData } from '../localStorage';
+import { apiCallWithPrayerTime,  } from '../api';
 const { Option } = Select;
 const layout = {
   labelCol: {
@@ -17,30 +19,20 @@ const tailLayout = {
     span: 16,
   },
 };
-const countries = Country.getAllCountries();
 
-const App = ({setUserData, contextHolder}) => {
+const countries    = Country.getAllCountries();
+
+const App = ({setPrayers , setUserInfoData, setActiveKey}) => {
   const [form]                          = Form.useForm();
   const [userInfo, setUserInfo]         = useState({});
   const [countryCode, setCountryCode]   = useState();
   const [country, setCountry]           = useState([]);
   const [city, setCity]                 = useState([]);
+  const [messageApi, contextHolder]     = message.useMessage();
   const [salatMethods, setSalatMethods] = useState([]);
   const [loading, setLoading]           = useState(true);
-
-
-  const onChangeCountry = (value) => {
-    if (value) {
-      setCountry(value);
-      setCountryCode(() => {
-        const selectedCountryCode = countries.find(
-          (e) => e.name === value
-        );
-        return selectedCountryCode.isoCode; 
-      });
-    }
-    setCity([]);
-	};
+  const [loadings, setLoadings]         = useState([]);
+  const [disable, setDisable]           = useState(false);
 
   useEffect(() => {
     if (countryCode) {
@@ -49,17 +41,18 @@ const App = ({setUserData, contextHolder}) => {
     }
   },[countryCode])
 
-
+ 
   useEffect(() => {
     if (! Object.keys(userInfo).length) {
-      const data = JSON.parse(localStorage.getItem('users')) ?? [];
+      const data = getUserData() ?? [];
       const findCountry = countries.find(country => country.name == data.country);
       if (findCountry) {
         setCountryCode(findCountry.isoCode);
       }
       setUserInfo(data);
       setLoading(false);
-    }  
+    } 
+
   }, []);
   
   useEffect(() => {
@@ -73,43 +66,79 @@ const App = ({setUserData, contextHolder}) => {
         console.log(err.message);
       });
     }  
+    setDisable(false);
   }, []);
 
-  const onFinish = (values) => {
-    setUserData(values);
+  useEffect(() => {
+    setDisable(false);
+  }, [disable]);
+
+  const enterLoading = (index) => {
+    setLoadings((prevLoadings) => {
+      const newLoadings = [...prevLoadings];
+      newLoadings[index] = true;
+      return newLoadings;
+    });
+    setTimeout(() => {
+      setLoadings((prevLoadings) => {
+        const newLoadings = [...prevLoadings];
+        newLoadings[index] = false;
+        return newLoadings;
+      });
+    }, 1000);
   };
 
-  function FormItem ({name, label, placeholder, options, onChange}) {
-    return (
-      <Form.Item
-      name= {name}
-      label= {label}
-      rules={[
-        {
-          required: true,
-        },
-      ]}
-    >
-      <Select
-        placeholder= {placeholder}
-        showSearch
-        onChange={onChange}
-        allowClear
-      >
-      {options.map((value, index) => (
-              <Option key={index} value={value.name}>
-									{value.name}
-							</Option>
-      ))}
-      </Select>
-    </Form.Item>
-    )
-  }
- 
+  const onChangeCountry = (value) => {
+    if (value) {
+      setCountry(value);
+      setCountryCode(() => {
+        const selectedCountryCode = countries.find(
+          (e) => e.name === value
+        );
+        return selectedCountryCode.isoCode; 
+      });
+      form.setFieldValue('city', undefined);
+    }
+	};
 
+
+  const onFinish = (values) => {
+    if (values) {
+          fetch(apiCallWithPrayerTime(values))
+          .then((response) => {
+            if (! response.ok) throw new Error('status code 400') 
+            return response.json();
+          })
+          .then((data) => {
+            storePrayersData(data);
+            storeUserData(values);
+            setPrayers(getPrayersData())
+            setUserInfoData(getUserData());
+            setActiveKey("2");
+            setDisable(true);
+            messageApi.info('Data Save successfully');
+          })
+          .catch((error) => {
+            localStorage.removeItem("prayer");
+            setPrayers(getPrayersData())
+            setUserInfoData(getUserData());
+            setDisable(true);
+            messageApi.info('your country prayer data not found');
+          });
+    
+    } else {
+      setUserInfoData(getUserData());
+      setPrayers(getPrayersData());
+    }
+
+  };
+
+  const onReset = () => {
+    form.resetFields();
+    // form.setFieldValue('country', undefined);
+  };
 
   return (
-    
     <>
        {contextHolder}
       {!loading && <Form
@@ -119,26 +148,50 @@ const App = ({setUserData, contextHolder}) => {
           onFinish={onFinish}
           initialValues={{...userInfo}}
         >
-
         <Form.Item
             name="name"
             label="Name"
             placeholder="Your Name"
             rules={[
               {
-                required: false,
+                required: true,
+                message: 'please type your name'
               },
             ]}
           >
           <Input  placeholder="Your Name" />
         </Form.Item>
-        <FormItem name="country"  label="Country" onChange={onChangeCountry} placeholder="Select Your Country" options={countries}/>
+        <Form.Item
+          name= "country"
+          label= "Country"
+          rules={[
+            {
+              required: true,
+              message: "please select your country name"
+            },
+          ]}
+        >
+          <Select
+            placeholder="Select Your country"
+            onChange={onChangeCountry}
+            allowClear
+            showSearch
+          >
+            {
+              countries.map((value, index) => (
+                  <Option key={index} value={value.name}>
+                    {value.name}
+                </Option>))
+            } 
+          </Select>
+        </Form.Item>
         { city.length ? (<Form.Item
           name="city"
           label="City"
           rules={[
             {
               required: true,
+              message: 'please select your city' 
             },
           ]}
         >
@@ -163,15 +216,14 @@ const App = ({setUserData, contextHolder}) => {
           rules={[
             {
               required: true,
+              message: 'please select your mazhab'
             },
           ]}
         >
           <Select
             placeholder="Select Your Mazhab"
-            // onChange={onChangeMazhab}
             allowClear
           >
-         
             <Option value="0">Shafi</Option>
             <Option value="1">Hanafi</Option>
             <Option value="2">Maliki</Option>
@@ -184,6 +236,7 @@ const App = ({setUserData, contextHolder}) => {
           rules={[
             {
               required: true,
+              message: 'please select your salat time calculation methods'
             },
           ]}
         >
@@ -200,8 +253,11 @@ const App = ({setUserData, contextHolder}) => {
           </Select>
         </Form.Item>
         <Form.Item {...tailLayout}>
-          <Button style={{ marginRight:"20px"}} type="primary" htmlType="submit">
+          <Button style={{ marginRight:"20px"}} type="primary" htmlType="submit" loading={loadings[0]} onClick={() => enterLoading(0)}>
             Submit
+          </Button>
+          <Button htmlType="button" disabled= {disable} onClick={onReset}>
+            Reset
           </Button>
         </Form.Item> 
       </Form>

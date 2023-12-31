@@ -4,7 +4,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import './dataShow.css';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
-
+import { getUserData, getPrayersData, getPersistentPrayerData, storePersistentPrayerData } from '../localStorage';
 
 const justifyOptions = [
   'flex-start',
@@ -30,9 +30,10 @@ const App = () => {
   }))
   const [data, setData] = useState([]); 
   const [timings, setTimings] = useState([]);
+  const [loading, setLoading] = useState(false);
   const prepareTimings = (prayerData, persistentData) => {
     const modifiedData = moment(date).format('DD');
-    const current = prayerData[modifiedData - 1];
+    const current      = prayerData[modifiedData - 1];
 
   const _timings = [];
   const excludedTimingKeys = ['Sunrise', 'Sunset', 'Imsak', 'Midnight', 'Lastthird', 'Firstthird'];
@@ -52,29 +53,24 @@ const App = () => {
   }
   useEffect(() => {
     if (!data.length) {
-      const { data: prayerData } = JSON.parse(localStorage.getItem("prayer"));
-      const persistentData = JSON.parse(localStorage.getItem("persistent_prayer")) ?? [];
-      const currentDateIndex = persistentData?.findIndex(data => date == data?.date);
-    
-
+      const { data: prayerData } = getPrayersData();
+      const persistentData       = getPersistentPrayerData() ?? [];
+      const currentDateIndex     = persistentData?.findIndex(data => date == data?.date);
       let persistentResult = {};
-      
       if (currentDateIndex > -1) {
         setCurrentDatePersistentIndex(currentDateIndex);
         persistentResult = persistentData[currentDateIndex];
       }
       setData(prayerData);
       prepareTimings(prayerData, persistentResult);
-      
     }
   }, []);
 
   useEffect(() => {
     if (data.length) {
-      const persistentData = JSON.parse(localStorage.getItem("persistent_prayer")) ?? [];
+      const persistentData = getPersistentPrayerData() ?? [];
       const currentDateIndex = persistentData?.findIndex(data => date == data?.date);
       let persistentResult = {};
-      
       if (currentDateIndex > -1) {
         setCurrentDatePersistentIndex(currentDateIndex);
         persistentResult = persistentData[currentDateIndex];
@@ -89,8 +85,7 @@ const App = () => {
     const timing = {...timings[index]};
     timing.isCompleted = !timing.isCompleted;
     timings[index] = timing; 
-    const persistentData = JSON.parse(localStorage.getItem("persistent_prayer")) ?? [];
-    console.log({currentDataPersistentIndex})
+    const persistentData = getPersistentPrayerData() ?? [];
     if (currentDataPersistentIndex > -1) {
       const data = persistentData[currentDataPersistentIndex];
       const prayerIndex = data.timings.findIndex(timing => timing.label == timings[index].label);
@@ -109,7 +104,8 @@ const App = () => {
       });
       setCurrentDatePersistentIndex(persistentData.length - 1);
     }  
-    localStorage.setItem('persistent_prayer', JSON.stringify(persistentData));
+    // localStorage.setItem('persistent_prayer', JSON.stringify(persistentData));
+    storePersistentPrayerData(persistentData);
     setTimings([...timings]);
   }
   
@@ -124,11 +120,11 @@ const App = () => {
                       setDate(moment(date).add(1, 'days').format(GLOBAL_DATE_FORMAT))
                     }}><FaAngleRight style={{ width: "30px", height: "30px", marginLeft:"100px", cursor:"pointer"}} /></p>
                 </Flex>
-              {timings.map((timing, index) => (
+              {timings?.map((timing, index) => (
                 <Flex key={timing.id}  className='boxStyle' justify={justify} align={alignItems}>
                         <li>{timing.label}</li>
                         <li>{timing.time}</li>
-                        <li>{ date > moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox onChange={() => handleCompleteSalat(index)} disabled  checked={timing.isCompleted}></Checkbox> : <Checkbox onChange={() => handleCompleteSalat(index)}  checked={timing.isCompleted}></Checkbox>}</li>    
+                        <li>{ date > moment().format(GLOBAL_DATE_FORMAT) || date < moment().format(GLOBAL_DATE_FORMAT) ? <Checkbox onChange={() => handleCompleteSalat(index)} disabled  checked={timing.isCompleted}></Checkbox> : <Checkbox onChange={() => handleCompleteSalat(index)}  checked={timing.isCompleted}></Checkbox>}</li>    
                 </Flex>
               
               )) }  
