@@ -3,7 +3,7 @@ import { Button, Form, Input, Select, message } from 'antd';
 import { Country, City } from 'country-state-city'
 import { useState, useEffect } from 'react';
 import { storePrayersData, storeUserData, getUserData, getPrayersData } from '../localStorage';
-import { apiCallWithPrayerTime,  } from '../api';
+import { getPrayerTimeData, getPrayerTimeCalculationMethods } from '../api';
 const { Option } = Select;
 const layout = {
   labelCol: {
@@ -12,7 +12,7 @@ const layout = {
   wrapperCol: {
     span: 16,
   },
-};
+}
 const tailLayout = {
   wrapperCol: {
     offset: 8,
@@ -57,8 +57,7 @@ const App = ({setPrayers , setUserInfoData, setActiveKey}) => {
   
   useEffect(() => {
     if (salatMethods) {
-      fetch(`https://api.aladhan.com/v1/methods`)
-      .then((response) => response.json())
+      getPrayerTimeCalculationMethods()
       .then((data) => {
         setSalatMethods(Object.values(data.data));
       })
@@ -104,11 +103,7 @@ const App = ({setPrayers , setUserInfoData, setActiveKey}) => {
 
   const onFinish = (values) => {
     if (values) {
-          fetch(apiCallWithPrayerTime(values))
-          .then((response) => {
-            if (! response.ok) throw new Error('status code 400') 
-            return response.json();
-          })
+      getPrayerTimeData(values)
           .then((data) => {
             storePrayersData(data);
             storeUserData(values);

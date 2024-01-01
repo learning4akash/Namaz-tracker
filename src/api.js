@@ -1,17 +1,41 @@
-export const apiCallWithPrayerTime = (userData) => {
+const baseUrl = "https://api.aladhan.com/v1";
+
+function getPrayerTimeApiUrl(userData) {
     const salatTime    = new Date();
     const currentYear  = salatTime.getFullYear();
     const currentMonth = salatTime.getMonth() + 1;
-
-    const baseUrl = "https://api.aladhan.com/v1";
-    let path = null;
-    let queryParams = `&method=${userData.salat_method}school=${userData.mazhab}`;
+    const searchParams = new URLSearchParams({
+        method: userData.salat_method,
+        school: userData.mazhab
+    });
 
     if (userData.hasOwnProperty('city')) {
-        path =  `/calendarByCity/${currentYear}/${currentMonth}?city=${userData.city}&country=${userData.country}`
+        searchParams.set("city", userData.city);
+        searchParams.set("country", userData.country);
     } else {
-        path = `/calendarByAddress/${currentYear}/${currentMonth}?address=${userData.country}`;
+        searchParams.set("address", userData.country);
     }
 
-    return baseUrl + path + queryParams;
+    return `${baseUrl}/calendarByCity/${currentYear}/${currentMonth}?${searchParams.toString()}`;
 }
+
+export async function getPrayerTimeData(userData) {
+    return fetch(getPrayerTimeApiUrl(userData))
+          .then((response) => {
+            if (!response.ok) throw new Error('status code 400') 
+            return response.json();
+          });
+}
+
+export async function getPrayerTimeCalculationMethods() {
+    const baseUrl = `https://api.aladhan.com/v1/methods`;
+    return fetch(baseUrl)
+           .then((response) => {
+            if (!response.ok) throw new Error('status code 400');
+            return response.json();
+           })
+}
+
+// export const apiCallSalatCalculationMethods = () => {
+//     return `https://api.aladhan.com/v1/methods`
+// }
