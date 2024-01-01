@@ -15,7 +15,7 @@ const App = () => {
 
   useEffect(() => {
     setUserInfoData(getUserData());
-    setPrayers(getPrayersData);
+    setPrayers(getPrayersData());
   }, [])
   
   return (
